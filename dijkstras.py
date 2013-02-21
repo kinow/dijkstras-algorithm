@@ -14,15 +14,19 @@ class Graph:
         previous = {}  # Previous node in optimal path from source
         nodes = [] # Priority queue of all nodes in Graph
 
+        # The following change is *incorrect*, as we should *not* be
+        # inserting the start vertex at this time in the heap, but
+        # it is the basis of a potentially more efficient way to initialize
+        # things. See further comments in the commit note.
         for vertex in self.vertices:
-            if vertex == start: # Set root node as distance of 0
-                distances[vertex] = 0
-                heapq.heappush(nodes, [0, vertex])
-            else:
-                distances[vertex] = sys.maxint
-                heapq.heappush(nodes, [sys.maxint, vertex])
+            distances[vertex] = sys.maxint
+            heapq.heappush(nodes, [sys.maxint, vertex])
             previous[vertex] = None
-        
+
+        # Special case: set root node as distance of 0
+        distances[start] = 0
+        heapq.heappush(start, [0, start])
+
         while nodes:
             smallest = heapq.heappop(nodes)[1] # Vertex in nodes with smallest distance in distances
             if smallest == finish: # If the closest node is our target we're done so print the path
